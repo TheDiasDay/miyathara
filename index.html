@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore Kazakhstan’s water bodies and the stories behind them.">
+  <title>Miyathara — Stories of Water</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.9.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.9.0/dist/maplibre-gl.js"></script>
+  <script defer src="./stories.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="cover" id="home">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="Miyathara — Stories of Water: Worlds to Discover">
+        <svg class="brand-wave" viewBox="0 0 44 10" aria-hidden="true" focusable="false">
+          <path d="M2 8 C8 3.5 11 0.5 15 2 S23 8 30 8.3 S39 7 42 5.7"/>
+        </svg>
+        <strong class="brand-name">Miyathara</strong>
+        <span class="brand-tagline" lang="en">Stories of Water: Worlds to Discover</span>
+      </a>
+      <div class="nav-links">
+        <div class="nav-item language">
+          <button type="button" id="language-button" aria-expanded="false" aria-controls="languages" data-popover="languages"><span>ENG</span> <svg class="chevron" viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5"/></svg></button>
+          <div id="languages" class="popover language-options" hidden>
+            <button data-lang="en" lang="en">ENG</button>
+            <button data-lang="ru" lang="ru">RUS</button>
+            <button data-lang="kk" lang="kk">KAZ</button>
+          </div>
+        </div>
+        <div class="nav-item">
+          <button type="button" id="about-button" aria-expanded="false" aria-controls="about" data-popover="about">About</button>
+          <section class="popover info" id="about" aria-labelledby="about-title" hidden>
+            <button class="close" type="button" data-close aria-label="Close">×</button>
+            <h2 id="about-title">About Miyathara</h2>
+            <div id="about-copy"></div>
+          </section>
+        </div>
+        <div class="nav-item">
+          <button type="button" id="guide-button" aria-expanded="false" aria-controls="guide" data-popover="guide">How it works</button>
+          <section class="popover info" id="guide" aria-labelledby="guide-title" hidden>
+            <button class="close" type="button" data-close aria-label="Close">×</button>
+            <h2 id="guide-title">How it works</h2>
+            <div id="guide-copy"></div>
+          </section>
+        </div>
+      </div>
+    </nav>
+    <div class="intro">
+      <h1 id="headline"><span><em>Explore</em> the Kazakhstan’s</span><span>Water <em>Bodies</em></span></h1>
+      <a class="cta" id="go" href="#map">Go to map</a>
+    </div>
+  </header>
+  <main id="map" tabindex="-1" aria-label="Explore the map">
+    <div class="map-bar"><a class="back" href="#home" aria-label="Back to cover"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg></a></div>
+    <section class="explorer" aria-label="Map and water body directory">
+      <div class="scene">
+        <div id="map-canvas" aria-label="Map of Kazakhstan"></div>
+        <p id="map-status" class="map-status" role="status" hidden></p>
+        <div id="card-anchor" class="card-anchor" hidden>
+          <article id="card" class="card" aria-labelledby="lake-title">
+            <button id="close-card" class="close" aria-label="Close water body details">×</button>
+            <h2 id="lake-title"></h2><p class="region" id="region"></p>
+            <div class="tabs" id="tabs" role="tablist" aria-label="Water body details"></div>
+            <div id="story" class="story" role="tabpanel" tabindex="0"></div>
+          </article>
+        </div>
+      </div>
+      <aside class="directory" aria-label="Water body directory">
+        <button id="toggle-list" type="button" aria-label="Toggle water body list" aria-expanded="true" aria-controls="directory-content"><svg viewBox="0 0 12 18" aria-hidden="true"><path d="m3 3 6 6-6 6"/></svg></button>
+        <div id="directory-content">
+          <div class="directory-top">
+            <label class="sr-only" id="search-label" for="search">Search water bodies</label>
+            <div class="search-field"><input id="search" placeholder="Type..." type="search" autocomplete="off"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 5 5"/></svg></div>
+          </div>
+          <ul id="places"></ul><p id="empty" hidden></p>
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
