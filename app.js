@@ -6,7 +6,7 @@ const lakes = [
   {id:"balkhash", names:["Balkhash","Балхаш","Балқаш"], regions:["Balkhash","Балхаш","Балқаш"], point:[74.25,46.52], zoom:6.6},
   {id:"burabay", names:["Burabay","Бурабай","Бурабай"], regions:["Akmola Region","Акмолинская область","Ақмола облысы"], point:[70.27,53.08], zoom:10},
   {id:"caspian", names:["Caspian Sea","Каспийское море","Каспий теңізі"], regions:["Mangystau Region","Мангистауская область","Маңғыстау облысы"], point:[50.63,44.09], zoom:5.5},
-  {id:"taldykol", names:["Maly Taldykol","Малый Талдыколь","Кіші Талдыкөл"], regions:["Astana","Астана","Астана"], point:[71.36,51.11], zoom:12},
+  {id:"taldykol", names:["Maly Taldykol","Малый Талдыколь","Кіші Талдыкөл"], regions:["Astana","Астана","Астана"], point:[71.385326,51.113803], zoom:12},
   {id:"tengiz", names:["Tengiz","Тенгиз","Теңіз"], regions:["Akmola Region","Акмолинская область","Ақмола облысы"], point:[68.91,50.45], zoom:8.1}
 ];
 
