@@ -296,12 +296,15 @@ input::-webkit-search-cancel-button { position: relative; right: -.2rem; }
 .maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib { color: #455453; font-size: 10px; background: #efeaddd9; }
 .sr-only { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
 @keyframes pop-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pop-in-center { from { opacity: 0; transform: translate(-50%, -6px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @media (max-width: 740px) {
-  .nav { flex-wrap: wrap; align-items: flex-start; gap: .85rem; padding-inline: 1.2rem; }
+  .nav { flex-direction: column; align-items: center; gap: .9rem; padding-inline: 1rem; }
+  .nav-links { width: 100%; justify-content: center; gap: clamp(.7rem, 3vw, 1.2rem); }
   .nav-item { position: static; }
-  .nav-item > button { padding: .6rem 0; }
-  .popover { top: calc(100% - .7rem); right: 1rem; }
-  .language-options { right: 8rem; }
+  .nav-item > button { padding: .4rem 0; font-size: clamp(.85rem, 3.5vw, 1rem); }
+  .popover { top: calc(100% + .4rem); left: 50%; right: auto; animation: pop-in-center .22s ease both; }
+  .popover::before { left: var(--caret-left, 50%); right: auto; transform: translateX(-50%) rotate(45deg); }
+  .language-options { left: var(--popover-x, 50%); min-width: 86px; }
   .intro h1 { font-size: clamp(2.8rem, 8vw, 4.6rem); }
   .map-bar { height: 62px; }
   .explorer { display: flex; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
@@ -321,3 +324,4 @@ input::-webkit-search-cancel-button { position: relative; right: -.2rem; }
   *, *::before { animation: none !important; transition: none !important; }
 }
 .card::after { left: var(--tail-x, 50%); }
+
