@@ -77,8 +77,20 @@ function openPanel(button) {
   if (next) {
     next.setAttribute("aria-expanded","true");
     id(next.dataset.popover).hidden = false;
+    positionPanel(next);
   }
 }
+function positionPanel(button) {
+  if (!media.matches) return;
+  const panel = id(button.dataset.popover);
+  const nav = document.querySelector(".nav").getBoundingClientRect();
+  const trigger = button.getBoundingClientRect();
+  const center = trigger.left + trigger.width / 2;
+  panel.style.setProperty("--popover-x", center - nav.left + "px");
+  const bounds = panel.getBoundingClientRect();
+  panel.style.setProperty("--caret-left", Math.max(15, Math.min(bounds.width - 15, center - bounds.left)) + "px");
+}
+window.addEventListener("resize", () => { if (popupButton) positionPanel(popupButton); });
 function closePanel(restoreFocus = false) {
   const button = popupButton;
   openPanel(null);
@@ -355,6 +367,7 @@ function createMap() {
 }
 renderLanguage();
 createMap();
+
 
 
 
