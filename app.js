@@ -310,9 +310,24 @@ document.querySelector(".back").addEventListener("click", () => {
 });
 
 function fitOverview() {
-  map.fitBounds([[46,39.1],[89,56.6]], {
-    padding:{top:36,bottom:30,left:26,right:railWidth()+20},
-    duration:reduce.matches ? 0 : 500
+  const center = [66.8,48.3];
+  const origin = maplibregl.MercatorCoordinate.fromLngLat(center);
+  const points = lakes.map(lake => maplibregl.MercatorCoordinate.fromLngLat(lake.point));
+  const halfWidth = Math.max(...points.map(point => Math.abs(point.x - origin.x)));
+  const halfHeight = Math.max(...points.map(point => Math.abs(point.y - origin.y)));
+  const canvas = id("map-canvas");
+  const rail = railWidth();
+  const width = canvas.clientWidth - rail - (media.matches ? 48 : 64);
+  const height = canvas.clientHeight - 88;
+  if (width <= 0 || height <= 0) return;
+
+  // At zoom zero, the normalized Mercator world is 512 pixels wide.
+  const zoom = Math.log2(Math.min(width / (1024 * halfWidth), height / (1024 * halfHeight)));
+  map.easeTo({
+    center, zoom,
+    padding:{top:0,bottom:0,left:0,right:rail},
+    duration:reduce.matches ? 0 : 1250,
+    easing:t => t * t * (3 - 2 * t)
   });
 }
 function lakeLabelText() {
@@ -391,7 +406,7 @@ function createMap() {
   try {
     map = new maplibregl.Map({
       container:"map-canvas",style,center:[67.1,48.5],zoom:4.25,
-      minZoom:2.8,maxZoom:14,dragRotate:false,pitchWithRotate:false,scrollZoom:false,attributionControl:false
+      minZoom:2.5,maxZoom:14,dragRotate:false,pitchWithRotate:false,scrollZoom:false,attributionControl:false
     });
   } catch {
     mapMessage = "error";
