@@ -275,6 +275,7 @@ function closeCard() {
   active = null;
   anchor.hidden = true;
   syncSelection();
+  if (mapReady) fitOverview();
   if (sourceButton?.isConnected) sourceButton.focus({preventScroll:true});
   else id("search").focus({preventScroll:true});
 }
@@ -288,8 +289,8 @@ id("toggle-list").addEventListener("click", () => {
   else if (mapReady) fitOverview();
 });
 document.querySelector(".back").addEventListener("click", () => {
-  closeCard();
-  if (mapReady) fitOverview();
+  if (active) closeCard();
+  else if (mapReady) fitOverview();
 });
 
 function fitOverview() {
