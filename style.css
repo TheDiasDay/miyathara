@@ -60,6 +60,15 @@ svg { display: block; }
   z-index: -1;
   background: linear-gradient(180deg, #202c365e, #27313950 55%, #15263145);
 }
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: clamp(110px, 16vh, 190px);
+  z-index: -1;
+  background: linear-gradient(180deg, transparent, var(--paper));
+  pointer-events: none;
+}
 .nav {
   position: absolute;
   inset: 0 0 auto;
@@ -188,11 +197,10 @@ svg { display: block; }
 }
 .cta:hover { background: #ffffff38; border-color: #ffffffa0; }
 .map-bar {
-  height: clamp(76px, 11vh, 130px);
+  height: clamp(68px, 8vh, 90px);
   display: flex;
   align-items: center;
   padding-inline: clamp(1rem, 5.7vw, 5.2rem);
-  border-bottom: 1px solid #ded9cb;
 }
 .back { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #454743; border-radius: 50%; }
 .back svg { width: 17px; stroke: currentColor; fill: none; stroke-width: 1.4; }
@@ -201,7 +209,7 @@ svg { display: block; }
   --rail-width: clamp(270px, 26vw, 370px);
   position: relative;
   min-height: 570px;
-  height: calc(100svh - clamp(76px, 11vh, 130px));
+  height: calc(100svh - clamp(68px, 8vh, 90px));
   overflow: hidden;
 }
 .scene, #map-canvas { position: absolute; inset: 0; }
@@ -306,7 +314,7 @@ input::-webkit-search-cancel-button { position: relative; right: -.2rem; }
   .popover::before { left: var(--caret-left, 50%); right: auto; transform: translateX(-50%) rotate(45deg); }
   .language-options { left: var(--popover-x, 50%); min-width: 86px; }
   .intro h1 { font-size: clamp(2.8rem, 8vw, 4.6rem); }
-  .map-bar { height: 62px; }
+  .map-bar { height: 58px; }
   .explorer { display: flex; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
   .scene { position: relative; height: max(475px, 65svh); overflow: hidden; }
   .directory { position: relative; inset: auto; width: auto; margin: 0 1rem 1rem; border-radius: 18px; transition: none; }
