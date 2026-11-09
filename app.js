@@ -176,7 +176,7 @@ function syncSelection() {
 }
 function renderDirectory() {
   const query = id("search").value.trim().toLocaleLowerCase();
-  const matches = lakes.filter(lake => [...lake.names,...lake.regions].some(value => value.toLocaleLowerCase().includes(query)));
+  const matches = lakes.filter(lake => lake.names.some(name => name.toLocaleLowerCase().startsWith(query)));
   id("places").replaceChildren(...matches.map(lake => {
     const button = textNode("button","");
     button.className = "place";
