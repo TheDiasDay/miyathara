@@ -238,8 +238,8 @@ function positionCard() {
   const minX = Math.min(visibleWidth/2,cardWidth/2+12);
   const maxX = Math.max(minX,visibleWidth-minX);
   const x = Math.min(maxX,Math.max(minX,point.x));
-  const minY = anchor.offsetHeight+14;
-  const y = Math.max(minY,Math.min(scene.clientHeight-28,point.y-34));
+  const minY = anchor.offsetHeight + mapTopInset() + 14;
+  const y = Math.min(scene.clientHeight-28,Math.max(minY,point.y-34));
   anchor.style.left = x + "px";
   anchor.style.top = y + "px";
   anchor.style.setProperty("--tail-x",Math.max(15,Math.min(cardWidth-15,cardWidth/2+point.x-x))+"px");
@@ -251,6 +251,9 @@ function revealCard() {
 }
 function railWidth() {
   return directoryOpen && !media.matches ? document.querySelector(".directory").offsetWidth : 0;
+}
+function mapTopInset() {
+  return document.querySelector(".back").offsetTop;
 }
 function stopFlight() {
   ++flight;
@@ -318,14 +321,15 @@ function fitOverview() {
   const canvas = id("map-canvas");
   const rail = railWidth();
   const width = canvas.clientWidth - rail - (media.matches ? 48 : 64);
-  const height = canvas.clientHeight - 88;
+  const topInset = mapTopInset();
+  const height = canvas.clientHeight - topInset - 88;
   if (width <= 0 || height <= 0) return;
 
   // At zoom zero, the normalized Mercator world is 512 pixels wide.
   const zoom = Math.log2(Math.min(width / (1024 * halfWidth), height / (1024 * halfHeight)));
   map.easeTo({
     center, zoom,
-    padding:{top:0,bottom:0,left:0,right:rail},
+    padding:{top:topInset,bottom:0,left:0,right:rail},
     duration:reduce.matches ? 0 : 1250,
     easing:t => t * t * (3 - 2 * t)
   });
