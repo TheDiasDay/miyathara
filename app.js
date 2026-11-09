@@ -152,6 +152,10 @@ function renderLanguage() {
   id("empty").textContent = t.empty;
   renderMapStatus();
   renderDirectory();
+  if (mapReady) {
+    map.setLayoutProperty("lake-labels", "text-field", lakeLabelText());
+    map.setLayoutProperty("place-labels", "text-field", placeLabelText());
+  }
   if (active) renderCard();
 }
 function renderMapStatus() {
@@ -311,19 +315,77 @@ function fitOverview() {
     duration:reduce.matches ? 0 : 500
   });
 }
+function lakeLabelText() {
+  return ["step", ["zoom"], ["case", ["get","overview"], ["get",language], ""], 8, ["get",language]];
+}
+function placeLabelText() {
+  const fallback = language === "en" ? [["get","name_en"], ["get","name:latin"]] : [];
+  return ["coalesce", ["get",`name:${language}`], ...fallback, ["get","name"], ""];
+}
 function createMap() {
   if (!window.maplibregl) { mapMessage = "error"; renderMapStatus(); return; }
   const attribution = '<a href="https://openfreemap.org/">OpenFreeMap</a> © <a href="https://openmaptiles.org/">OpenMapTiles</a> · © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
   const maritime = ["==",["to-number",["get","maritime"],0],1];
-  const landBoundary = level => ["all",["==",["get","admin_level"],level],["!",maritime]];
+  const landBoundary = level => ["all",["==",["to-number",["get","admin_level"],0],level],["!",maritime]];
+  const lakeLabels = {
+    type:"FeatureCollection",
+    features:lakes.map(({id,point,names:[en,ru,kk]}) => ({
+      type:"Feature",
+      geometry:{type:"Point",coordinates:point},
+      properties:{en,ru,kk,overview:!["burabay","taldykol"].includes(id)}
+    }))
+  };
   const style = {
     version:8,
-    sources:{atlas:{type:"vector",url:"https://tiles.openfreemap.org/planet",attribution}},
+    glyphs:"https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
+    sources:{
+      atlas:{type:"vector",url:"https://tiles.openfreemap.org/planet",attribution},
+      relief:{
+        type:"raster", tileSize:256, maxzoom:6,
+        tiles:["https://tiles.openfreemap.org/natural_earth/ne2sr/{z}/{x}/{y}.png"],
+        attribution:'<a href="https://www.naturalearthdata.com/">Natural Earth</a>'
+      },
+      "lake-labels":{type:"geojson",data:lakeLabels}
+    },
     layers:[
-      {id:"paper",type:"background",paint:{"background-color":"#efeadd"}},
-      {id:"water",type:"fill",source:"atlas","source-layer":"water",paint:{"fill-color":"#416d7c"}},
-      {id:"country-lines",type:"line",source:"atlas","source-layer":"boundary",filter:landBoundary(2),paint:{"line-color":"#789599","line-width":["interpolate",["linear"],["zoom"],3,.65,8,1.25]}},
-      {id:"region-lines",type:"line",source:"atlas","source-layer":"boundary",filter:landBoundary(4),paint:{"line-color":"#879e9c","line-opacity":.64,"line-width":["interpolate",["linear"],["zoom"],3,.55,8,1]}}
+      {id:"paper",type:"background",paint:{"background-color":"#efe9da"}},
+      {id:"relief",type:"raster",source:"relief",maxzoom:8,paint:{
+        "raster-opacity":["interpolate",["linear"],["zoom"],4,.38,6,.24,8,0],
+        "raster-saturation":-.55
+      }},
+      {id:"vegetation",type:"fill",source:"atlas","source-layer":"landcover",minzoom:6,
+        filter:["in",["get","class"],["literal",["wood","grass"]]],paint:{
+          "fill-color":["match",["get","class"],"wood","#a9b598","#c8cbaa"],
+          "fill-opacity":["interpolate",["linear"],["zoom"],6,0,9,.46],"fill-antialias":false
+        }},
+      {id:"rivers",type:"line",source:"atlas","source-layer":"waterway",minzoom:6,
+        filter:["==",["get","class"],"river"],paint:{
+          "line-color":"#568698","line-opacity":.8,
+          "line-width":["interpolate",["linear"],["zoom"],6,.5,10,1.2,14,2.5]
+        }},
+      {id:"water",type:"fill",source:"atlas","source-layer":"water",paint:{"fill-color":"#4b8197"}},
+      {id:"region-lines",type:"line",source:"atlas","source-layer":"boundary",filter:landBoundary(4),paint:{
+        "line-color":"#7a8074","line-opacity":.48,"line-dasharray":[2.5,2.5],
+        "line-width":["interpolate",["linear"],["zoom"],3,.55,8,1.05]
+      }},
+      {id:"country-lines",type:"line",source:"atlas","source-layer":"boundary",filter:landBoundary(2),paint:{
+        "line-color":"#666f66","line-opacity":.85,
+        "line-width":["interpolate",["linear"],["zoom"],3,1,8,1.65]
+      }},
+      {id:"place-labels",type:"symbol",source:"atlas","source-layer":"place",minzoom:4,layout:{
+        "text-field":placeLabelText(),"text-font":["Noto Sans Regular"],
+        "text-size":["interpolate",["linear"],["zoom"],4,11,10,13],"text-padding":8,
+        "symbol-sort-key":["coalesce",["get","rank"],20]
+      },filter:["step",["zoom"],
+        ["all",["==",["get","class"],"city"],["<=",["coalesce",["get","rank"],20],6]],
+        6,["==",["get","class"],"city"],
+        8,["in",["get","class"],["literal",["city","town"]]]
+      ],paint:{"text-color":"#4d564e","text-opacity":.86,"text-halo-color":"#f7f2e7","text-halo-width":1}},
+      {id:"lake-labels",type:"symbol",source:"lake-labels",layout:{
+        "text-field":lakeLabelText(),"text-font":["Noto Sans Bold"],
+        "text-size":["interpolate",["linear"],["zoom"],4,12,9,15],
+        "text-anchor":"top","text-offset":[0,.35],"text-max-width":12,"text-padding":5
+      },paint:{"text-color":"#143b4d","text-halo-color":"#fcf8ef","text-halo-width":1.5}}
     ]
   };
   try {
